@@ -11,6 +11,68 @@ A small, schema-driven transformation utility used in Portify/Manuscribe pipelin
 
 ---
 
+## Importing the Library
+
+The Integration Transform Library is designed to be consumed as a lightweight Python module.
+
+Standard Import
+```python
+from lib.integration_transformer import (
+    get_nested_value,
+    resolve_target_value,
+    merge_nested_dict,
+    process_line_mapping,
+    apply_run_execs_from_items,
+    transform_item,
+    _parse_body,
+    SPECIAL_LITERALS,
+)
+```
+
+Minimal Import (Common Usage)
+
+Most pipelines only need the main transformation entry point:
+```python
+from lib.integration_transformer import transform_item
+```
+
+Lambda / Worker Usage Example
+```python
+from lib.integration_transformer import transform_item
+
+def handler(event, context):
+    source = event["payload"]
+    mappings = event["mappings"]
+    operators = event.get("operators")
+
+    final_output, platform = transform_item(
+        integration_source=source,
+        mapping_items=mappings,
+        operator_items=operators,
+    )
+
+    return {
+        "statusCode": 200,
+        "body": final_output,
+    }
+```
+
+Internal / Advanced Usage
+
+For custom pipelines, debugging, or operator execution control:
+```python
+from lib.integration_transformer import (
+    get_nested_value,
+    resolve_target_value,
+    merge_nested_dict,
+    process_line_mapping,
+    apply_run_execs_from_items,
+)
+```
+
+⚠️ Note
+Functions prefixed with _ (e.g. _parse_body) are considered internal helpers and should primarily be used by Lambda/API handlers.
+
 ## Constants
 
 ### `SPECIAL_LITERALS: dict[str, str]`
